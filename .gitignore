@@ -136,3 +136,12 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Игнорируем сам .gitignore
+.gitignore
+
+# Игнорируем папки с миграциями Django
+*/migrations/
+
+# Игнорируем файл с зависимостями
+requirements.txt
