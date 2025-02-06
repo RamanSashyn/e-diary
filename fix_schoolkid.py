@@ -2,6 +2,12 @@ import random
 from datacenter.models import Schoolkid, Mark, Chastisement, Lesson, Commendation
 
 
+PRAISE_TEXTS = [
+    "Отличная работа!", "Молодец!", "Ты лучший!",
+    "Так держать!", "Прекрасный результат!"
+]
+
+
 def get_schoolkid(name):
     try:
         return Schoolkid.objects.get(full_name__contains=name)
@@ -30,21 +36,20 @@ def create_commendation(student_name, subject_name):
     if not schoolkid:
         return
 
-    lessons = Lesson.objects.filter(
+    last_lesson = Lesson.objects.filter(
         year_of_study=schoolkid.year_of_study,
         group_letter=schoolkid.group_letter,
         subject__title=subject_name,
     ).order_by("-date")
 
-    last_lesson = lessons.first()
-
-    praise_texts = ["Отличная работа!", "Молодец!", "Ты лучший!"]
-    praise_text = random.choice(praise_texts)
+    if not last_lesson:
+        print(f'Ошибка: Урок по предмету "{subject_name}" для {student_name} не найден.')
+        return
 
     Commendation.objects.create(
         schoolkid=schoolkid,
         teacher=last_lesson.teacher,
-        text=praise_text,
+        text=random.choice(PRAISE_TEXTS),
         created=last_lesson.date,
         subject=last_lesson.subject,
     )
